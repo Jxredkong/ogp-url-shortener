@@ -10,7 +10,11 @@ import { LinkRepository } from "./shortener/repository.js";
 import { ShortenerService } from "./shortener/service.js";
 import { pool } from "./db/pool.js";
 
-export function createApp(): Express {
+export interface CreateAppOptions {
+  service?: ShortenerService;
+}
+
+export function createApp(opts: CreateAppOptions = {}): Express {
   const app = express();
 
   app.use(helmet());
@@ -22,8 +26,7 @@ export function createApp(): Express {
     res.json({ status: "ok" });
   });
 
-  const repo = new LinkRepository(pool);
-  const service = new ShortenerService(repo);
+  const service = opts.service ?? new ShortenerService(new LinkRepository(pool));
 
   app.use("/api", createLinksRouter(service));
   app.use("/", createRedirectRouter(service));
