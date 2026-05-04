@@ -15,4 +15,15 @@ export default defineConfig({
       "/api": "http://localhost:3000",
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ["three", "@react-three/fiber"],
+          shader: ["@shadergradient/react"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1500,
+  },
 });
